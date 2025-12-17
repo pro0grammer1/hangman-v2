@@ -10,7 +10,7 @@
 
 - [ ] Design API endpoints
 - [ ] Database structure
-- [ ] List Features
+- [X] List Features
 - [ ] Update Readme
 
 ## Develop
