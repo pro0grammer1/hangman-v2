@@ -1,8 +1,8 @@
 // @ts-nocheck
-import express from 'express';
+import express, { type Express }  from 'express';
 var router = express.Router();
 
 /* GET users listing. */
-export const router = router.get('/', function(req, res, next) {
+export const router: Express = router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
