@@ -8,9 +8,11 @@ erDiagram
 
     profiles {
         UUID id PK
-        TEXT username UNIQUE
+        TEXT username "UNIQUE"
+        TEXT pfp
         TEXT status
-        TIMESTAMPTZ created_at a
+        TIMESTAMPTZ created_at
+        TIMESTAMPTZ deleted_at
     }
 
     relationships {
@@ -40,8 +42,8 @@ erDiagram
         UUID game_id FK
         INT round_index
         TEXT word
-        BOOLEAN completed
-        BOOLEAN won
+        TEXT status
+        UUID winner FK
         TIMESTAMPTZ started_at
         TIMESTAMPTZ finished_at
     }
@@ -49,8 +51,8 @@ erDiagram
     game_players {
         UUID game_id FK
         UUID user_id FK
-        INT score
-        BOOLEAN is_winner
+        TIMESTAMPTZ joined_at
+        TEXT result
     }
 
     moves {
@@ -78,7 +80,8 @@ erDiagram
         TEXT[] words
         TIMESTAMPTZ created_at
         TIMESTAMPTZ updated_at
-        BOOLEAN public
+        BOOLEAN is_public
+        BOOLEAN default
     }
 
 
@@ -87,8 +90,10 @@ erDiagram
     auth_users ||--o{ relationships : receives
 
     auth_users ||--o{ games : creates
+    auth_users ||--o{ wordlists : owns
     auth_users ||--o{ game_players : participates
     auth_users ||--o{ moves : makes
+    auth_users ||--o{ game_rounds : wins
 
     games ||--o{ game_players : has
     games ||--o{ game_rounds : contains
