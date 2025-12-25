@@ -20,3 +20,4 @@
 - [ ] Frontend
 - [ ] UI Redesign continuation
 - [ ] Design for the users with low connectivity
+- [ ] Handle unauthorised users
