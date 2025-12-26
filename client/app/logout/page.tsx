@@ -5,8 +5,12 @@ import { supabase } from "@/lib/supabaseClient";
 
 export default function Logout() {
   const router = useRouter();
+
+  // LogOut as soon as this page is called
   useEffect(() => {
     supabase.auth.signOut().finally(() => {
+      
+      // Redirect to home page after signout
       router.replace("/");
     });
   }, []);

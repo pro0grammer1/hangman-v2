@@ -1,12 +1,14 @@
 "use client";
-import Image from "next/image";
 import { supabase } from "@/lib/supabaseClient";
 
+// Sign in function
 const login = () => {
   supabase.auth.signInWithOAuth({
     provider: "google",
   });
 };
+
+// Test data to print
 const {
   data: { session },
 } = await supabase.auth.getSession();

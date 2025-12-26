@@ -1,5 +1,5 @@
 // Type imports
-import type { ResponseError } from "../types/response-error.js";
+
 // Library imports
 import express, { type Express } from "express";
 import path from "path";
@@ -23,7 +23,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-//App routes
+// App routes
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 

@@ -1,3 +1,4 @@
+// Import AppError class to create different error classes
 import { AppError } from "./AppError.js"
 
 export class BadRequestError extends AppError {

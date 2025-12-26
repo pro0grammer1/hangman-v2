@@ -5,10 +5,11 @@ import type {
   ErrorRequestHandler,
 } from "express";
 import { AppError } from "../errors/AppError.js";
-import type { ResponseError } from "../../types/response-error.js";
+import type { ResponseError } from "../../types/responseError.js";
 
 const isDev = process.env.NODE_ENV === "development";
 
+// Error Handler middleware
 export const errorHandler: ErrorRequestHandler = (
   err: ResponseError,
   _req: Request,
@@ -31,7 +32,7 @@ export const errorHandler: ErrorRequestHandler = (
     });
   }
 
-  // Trusted AppError
+  // Developer logging in development environment
   if (isDev) {
     console.error(
       `Error Code: ${err.code}\n` +
@@ -40,6 +41,7 @@ export const errorHandler: ErrorRequestHandler = (
     );
   }
 
+  // Trusted AppError
   return res.status(err.statusCode ?? 500).json({
     error: {
       code: err.code,
