@@ -1,7 +1,6 @@
 // Type imports
 import type { ResponseError } from "../types/response-error.js";
 // Library imports
-import createHttpError from "http-errors";
 import express, { type Express } from "express";
 import path from "path";
 import cookieParser from "cookie-parser";
