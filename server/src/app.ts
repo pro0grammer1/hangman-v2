@@ -11,14 +11,13 @@ import logger from "morgan";
 import cors from "cors";
 
 // Module imports
-import { indexRouter } from "./routes/index.js";
-import { meRouter } from "./routes/me.js";
+import { routesHandler } from "./lib/routeHandler.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
-import { __dirname } from "./utils/paths.js";
 import { NotFoundError } from "./errors/httpErrors.js";
 import { authHandler } from "./middlewares/authHandler.js";
-import { tryCatch } from './utils/tryCatch.js'
+import { tryCatch } from "./utils/tryCatch.js";
 const app: Express = express();
+const __dirname = import.meta.dirname;
 
 // External Middlewares
 app.use(logger("dev"));
@@ -38,8 +37,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(tryCatch(authHandler));
 
 // App routes
-app.use("/", indexRouter);
-app.use("/me", meRouter);
+await routesHandler();
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
