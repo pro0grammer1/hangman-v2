@@ -20,6 +20,10 @@ export async function routesHandler() {
       if (!/\.(ts|js|cjs|mjs)$/i.test(dir.name)) continue;
 
       const routerObj = await import(path.join(parentDir, dir.name));
+
+      for (const obj in routerObj.functions) {
+        ;
+      }
     }
   } catch (err) {
     console.error("[routesHandler] Failed to read routes directory:", err);

@@ -14,8 +14,6 @@ import cors from "cors";
 import { routesHandler } from "./lib/routeHandler.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
 import { NotFoundError } from "./errors/httpErrors.js";
-import { authHandler } from "./middlewares/authHandler.js";
-import { tryCatch } from "./utils/tryCatch.js";
 const app: Express = express();
 const __dirname = import.meta.dirname;
 
@@ -34,7 +32,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
-app.use(tryCatch(authHandler));
 
 // App routes
 await routesHandler();

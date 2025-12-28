@@ -1,20 +1,28 @@
-import { jwtVerify, createRemoteJWKSet } from "jose";
+import type { authorization } from "../../types/router.js";
+import type { Request } from "express";
 import { UnauthorizedError } from "../errors/httpErrors.js";
+import verifyJwt from "./verifyJwt.js";
 
-const PROJECT_JWKS = createRemoteJWKSet(
-  new URL(`${process.env.SUPABASE_URL}/auth/v1/.well-known/jwks.json`)
-)
-
-export default async function verifyJwt(token: string) {
-  const { payload } = await jwtVerify(token, PROJECT_JWKS)
-
-  if (typeof payload.sub != "string") {
-    throw new UnauthorizedError();
+export async function authHandler(authType: authorization, req: Request) {
+  const request = req.headers.authorization;
+  if (authType === "required") {
+    if (!request?.startsWith("Bearer ")) {
+      throw new UnauthorizedError("Authentication required");
+    }
+    try {
+      req.user = await verifyJwt(request.slice(7));
+    } catch (err) {
+      throw new UnauthorizedError("Invalid or expired token");
+    }
+  } else if (authType === "optional") {
+    if (request?.startsWith("Bearer ")) {
+      try {
+        req.user = await verifyJwt(request.slice(7));
+      } catch {
+        // ignore invalid token for optional auth
+      }
+    }
+  } else if (authType === "none") {
+    return;
   }
-
-  return {
-    id: payload.sub as string,
-    email: payload.email as string | undefined,
-    role: payload.role as string | undefined,
-  };
 }
