@@ -1,3 +1,4 @@
+// Check for the environment variables to ensure variables are set as intended.
 function requireEnv(name: string): string {
   console.log(`verifying ${name}`);
   const value = process.env[name];
@@ -7,6 +8,7 @@ function requireEnv(name: string): string {
   return value;
 }
 
+// Write the required environment variables here
 export const ENV = {
   NODE_ENV: process.env.NODE_ENV ?? "development",
 

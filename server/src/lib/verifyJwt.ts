@@ -1,6 +1,7 @@
 import { jwtVerify, createRemoteJWKSet } from "jose";
 import { UnauthorizedError } from "../errors/httpErrors.js";
 
+// Use JWKS to dynamically get JWT key
 const PROJECT_JWKS = createRemoteJWKSet(
   new URL(`${process.env.SUPABASE_URL}/auth/v1/.well-known/jwks.json`),
 );
