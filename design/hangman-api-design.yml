@@ -29,13 +29,13 @@ servers:
 
 #                                         COMPONENTS
 components:
-# ========= Security Schema ========= 
+  # ========= Security Schema =========
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
-# ========= Responses ========= 
+  # ========= Responses =========
   responses:
     Unauthorized:
       description: Authentication failed/required
@@ -77,9 +77,9 @@ components:
             code: "VALIDATION_ERROR"
             message: "Invalid input data"
 
-# ========= Other Schemas ========= 
+  # ========= Other Schemas =========
   schemas:
-      # --------- Variable Types  ---------
+    # --------- Variable Types  ---------
     ID:
       type: string
       format: uuid
@@ -101,9 +101,10 @@ components:
     DateTime:
       type: string
       format: date-time
-      example: "2026-01-05T10:30:00Z"
+      example:
+        "2026-01-05T10:30:00Z"
 
-       # --------- Route Schemas ---------
+        # --------- Route Schemas ---------
     Me:
       type: object
       required:
@@ -120,7 +121,7 @@ components:
           enum: ["authenticated", "anon"]
           example: "authenticated"
 
-# Seperate Private and Public profiles, to hide email addresses publicly
+    # Seperate Private and Public profiles, to hide email addresses publicly
     PrivateProfile:
       type: object
       required:
@@ -187,6 +188,40 @@ components:
                 games_lost:
                   type: integer
                   example: 12
+    Wordlist:
+      type: object
+      description: Wordlists for a game
+      required:
+        - owner_id
+        - name
+        - words
+        - created_at
+        - is_public
+      properties:
+        id:
+          $ref: "#/components/schemas/ID"
+        owner_id:
+          $ref: "#/components/schemas/ID"
+        name:
+          type: string
+          example: "@3.,wordlist"
+        words:
+          type: array
+          description: Formatting of a word that's allowed to be stored in a wordlist
+          items:
+            type: string
+            minLength: 2
+            maxLength: 250
+            pattern: "^[A-Za-z][a-z]*([- ][A-Za-z][a-z]*)*$"
+            example: "My Word"
+        created_at:
+          description: Wordlist creation date
+          $ref: "#/components/schemas/DateTime"
+        updated_at:
+          description: When was the wordlist last updated
+          $ref: "#/components/schemas/DateTime"
+        is_public:
+          type: boolean
 
     Error:
       type: object
@@ -204,7 +239,7 @@ components:
 
 #                                         PATHS
 paths:
-# ========= Me Path ========= 
+  # ========= Me Path =========
   /me:
     get:
       summary: Get current authenticated user
@@ -222,7 +257,7 @@ paths:
         "429":
           $ref: "#/components/responses/TooManyRequests"
 
-# ========= Profile Path (Session User) ========= 
+  # ========= Profile Path (Session User) =========
   /profile:
     get:
       summary: View profile of the authenticated user
@@ -291,7 +326,7 @@ paths:
         "404":
           $ref: "#/components/responses/NotFound"
 
-# ========= Profiles path (for other users) ========= 
+  # ========= Profiles path (for other users) =========
   /profiles/search:
     get:
       summary: "Search for a specific user profile/username"
@@ -364,6 +399,7 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "429":
           $ref: "#/components/responses/TooManyRequests"
+
   /profiles/view:
     get:
       summary: "View a specific user profile"
@@ -383,7 +419,26 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ProfileWithStats"
-                  
+
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+
+  /wordlists/default:
+    get:
+      summary: "View default wordlists"
+      responses:
+        "200":
+          description: Default wordlists fetched successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Wordlist"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
