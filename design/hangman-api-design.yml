@@ -192,6 +192,7 @@ components:
       type: object
       description: Wordlists for a game
       required:
+        - id
         - owner_id
         - name
         - words
@@ -428,6 +429,24 @@ paths:
           $ref: "#/components/responses/TooManyRequests"
 
   /wordlists/default:
+    get:
+      summary: "View default wordlists"
+      responses:
+        "200":
+          description: Default wordlists fetched successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Wordlist"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+  /wordlists/search:
     get:
       summary: "View default wordlists"
       responses:
