@@ -633,3 +633,68 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "429":
           $ref: "#/components/responses/TooManyRequests"
+
+  /relations/request:
+    post:
+      summary: Establish relation with another user
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: query
+          required: true
+          description: ID of the authenticated user to send request to
+          schema:
+            $ref: "#/components/schemas/ID"
+      responses:
+        "200":
+          description: Request sent successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Request"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          description: You've sent a request to the user recently, please wait some time before sending another request
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Error"
+                  - type: object
+                    properties:
+                      last_request:
+                        description: Date when relation was requested
+                        $ref: "#/components/schemas/DateTime"
+
+    delete:
+      summary: Cancel a request
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: query
+          required: true
+          description: Request ID to delete
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ID"
+              - type: object
+                properties:
+                  last_request:
+                    description: Time since last request
+                    $ref: "#/components/schemas/DateTime"
+      responses:
+        "204":
+          description: Request cancelled successfully
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
