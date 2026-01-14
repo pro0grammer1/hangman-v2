@@ -234,7 +234,6 @@ components:
         - addressee_id
         - status
         - requested_at
-        - accepted_at
       properties:
         id:
           $ref: "#/components/schemas/ID"
@@ -479,6 +478,30 @@ paths:
       summary: "Search for wordlists"
       security:
         - bearerAuth: []
+      parameters:
+        - name: q
+          in: query
+          required: true
+          description: Search query
+          schema:
+            $ref: "#/components/schemas/Username"
+        - name: limit
+          in: query
+          description: Maximum number of results to return
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 10
+          example: 10
+        - name: page
+          in: query
+          description: Get the page to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          example: 2
       responses:
         "200":
           description: wordlists fetched successfully
@@ -526,7 +549,7 @@ paths:
             schema:
               $ref: "#/components/schemas/Wordlist"
       responses:
-        "200":
+        "201":
           description: Wordlist added successfully
           content:
             application/json:
@@ -647,7 +670,7 @@ paths:
           schema:
             $ref: "#/components/schemas/ID"
       responses:
-        "200":
+        "201":
           description: Request sent successfully
           content:
             application/json:
@@ -682,13 +705,7 @@ paths:
           required: true
           description: Request ID to delete
           schema:
-            allOf:
-              - $ref: "#/components/schemas/ID"
-              - type: object
-                properties:
-                  last_request:
-                    description: Time since last request
-                    $ref: "#/components/schemas/DateTime"
+            $ref: "#/components/schemas/ID"
       responses:
         "204":
           description: Request cancelled successfully
