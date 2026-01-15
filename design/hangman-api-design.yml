@@ -715,3 +715,50 @@ paths:
           $ref: "#/components/responses/NotFound"
         "429":
           $ref: "#/components/responses/TooManyRequests"
+
+  /relations/respond:
+    post:
+      summary: Accept a relation request by another user
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: query
+          required: true
+          description: ID of the relation to accept
+          schema:
+            $ref: "#/components/schemas/ID"
+      responses:
+        "201":
+          description: Request sent successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Request"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+    delete:
+      summary: Cancel a request
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: query
+          required: true
+          description: Request ID to delete
+          schema:
+            $ref: "#/components/schemas/ID"
+      responses:
+        "204":
+          description: Request cancelled successfully
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
