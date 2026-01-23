@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import type { RouterObject } from "../../types/router.js";
 import { supabase } from "../lib/supabaseClient.js";
-import { NotFoundError, UnauthorizedError } from "../errors/httpErrors.js";
+import { NotFoundError, UnauthorizedError, BadRequestError } from "../errors/httpErrors.js";
 
 /* GET home page. */
 const profileRouter: RouterObject = {
@@ -46,6 +46,21 @@ const profileRouter: RouterObject = {
           pfp: req.body.pfp,
           status: req.body.status,
         };
+
+        if (req.body.username) {
+          const usernamePattern = /^[a-zA-Z0-9][a-zA-Z0-9 _-]*[a-zA-Z0-9]$/;
+          if (!usernamePattern.test(req.body.username)) {
+            throw new BadRequestError("Invalid username format");
+          }
+
+          if (req.body.username.length < 4){
+            throw new BadRequestError("Username must at least be 3 characters long.");
+          }
+
+          if (req.body.username.length > 30){
+            throw new BadRequestError("Username must not be more than 30 characters long.");
+          }
+        }
 
         Object.keys(updates).forEach(
           (k) =>
