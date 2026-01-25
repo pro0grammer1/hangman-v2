@@ -16,7 +16,7 @@ const profileRouter: RouterObject = {
       handler: async (req: Request, res: Response) => {
         const { data: profile, error } = await supabase
           .from("profiles")
-          .select("username, pfp, status, created_at")
+          .select("username, pfp, status, created_at, updated_at")
           .eq("id", req.user.id)
           .is("deleted_at", null)
           .single();
@@ -53,20 +53,34 @@ const profileRouter: RouterObject = {
             throw new BadRequestError("Invalid username format");
           }
 
-          if (req.body.username.length < 4){
+          if (req.body.username.length < 3){
             throw new BadRequestError("Username must at least be 3 characters long.");
           }
 
           if (req.body.username.length > 30){
             throw new BadRequestError("Username must not be more than 30 characters long.");
           }
+
+           const { data: existing } = await supabase
+            .from("profiles")
+            .select("id")
+            .eq("username", req.body.username)
+            .is("deleted_at", null)
+            .single();
+
+          if (existing && existing.id !== req.user.id) {
+            throw new BadRequestError("Username already taken");
+          }
+
+          if (existing && existing.id === req.user.id) {
+            delete updates.username;
+          }
         }
 
-        Object.keys(updates).forEach(
-          (k) =>
-            updates[k as keyof typeof updates] === undefined &&
-            delete updates[k as keyof typeof updates],
-        );
+        Object.keys(updates).forEach((k) => {
+          const key = k as keyof typeof updates;
+          if(updates[key] === undefined) delete updates[key];
+        });
 
         if (Object.keys(updates).length === 0) {
           throw new UnauthorizedError("No fields to update");
