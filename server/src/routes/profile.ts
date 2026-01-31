@@ -77,6 +77,16 @@ const profileRouter: RouterObject = {
           }
         }
 
+        if(req.body.pfp) {
+          if(!req.body.pfp.startsWith(process.env.SUPABASE_URL + `/storage/v1/object/public/profile_pictures/${req.user.id}`)) {
+            throw new BadRequestError("Invalid pfp url");
+          };
+
+          if(req.body.pfp.length > 2048) {
+            throw new BadRequestError("profile URI too long");
+          }
+        }
+
         Object.keys(updates).forEach((k) => {
           const key = k as keyof typeof updates;
           if(updates[key] === undefined) delete updates[key];
