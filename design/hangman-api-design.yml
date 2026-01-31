@@ -111,7 +111,33 @@ components:
         maxLength: 250
         pattern: "^[A-Za-z][a-z]*([- ][A-Za-z][a-z]*)*$"
         example: "My Word"
-
+    Lives:
+      type: number
+      minimum: 3
+      maximum: 20
+    GameStatus:
+      type: string
+      enum: ["won", "lost", "abandoned"]
+    GameState:
+      type: object
+      description: State of a game at a particular instance
+      required:
+        - total_lives
+      properties:
+        total_lives:
+          $ref: "#/components/schemas/Lives"
+        remaining_lives:
+          $ref: "#/components/schemas/Lives"
+        status:
+          $ref: "#/components/schemas/GameStatus"
+        gamemode:
+          type: string
+        created_at:
+          $ref: "#/components/schemas/DateTime"
+        started_at:
+          $ref: "#/components/schemas/DateTime"
+        finished_at:
+          $ref: "#/components/schemas/DateTime"
         # --------- Route Schemas ---------
     Me:
       type: object
@@ -249,6 +275,19 @@ components:
         accepted_at:
           description: Date when relation was established
           $ref: "#/components/schemas/DateTime"
+
+    GameData:
+      type: object
+      description: Generic data for a game that should be sent to user on a normal request
+      required:
+        - id
+      properties:
+        id:
+          $ref: "#/components/schemas/ID"
+        state:
+          $ref: "#/components/schemas/GameState"
+        wordlist:
+          $ref: "#/components/schemas/Wordlist"
 
     Error:
       type: object
@@ -782,4 +821,5 @@ paths:
           description: "Games fetched successfully."
           content:
             application/json:
-              $ref: "#/components/schema/GameData"
+              schema:
+                $ref: "#/components/schemas/GameData"
